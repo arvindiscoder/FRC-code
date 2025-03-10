@@ -1,0 +1,66 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot;
+
+import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
+/**
+ * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
+ * the code necessary to operate a robot with tank drive.
+ */
+public class Robot extends TimedRobot {
+  private final DifferentialDrive m_robotDrive;
+  private final Joystick m_leftStick;
+  private final Joystick m_rightStick;
+
+
+  SparkMax m_leftMotor = new SparkMax(4, MotorType.kBrushed);
+  SparkMax m_leftothermotor = new SparkMax(6, MotorType.kBrushed);
+  SparkMax m_rightmotor = new SparkMax(5, MotorType.kBrushed);
+  SparkMax m_rightothermotor = new SparkMax(2, MotorType.kBrushed);
+  PS4Controller PS41 = new PS4Controller(0);
+
+  /** Called once at the beginning of the robot program. */
+  public Robot() {
+    // We need to invert one side of the drivetrain so that positive voltages
+    // result in both sides moving forward. Depending on how your robot's
+    // gearbox is constructed, you might have to invert the left side instead.
+
+    m_robotDrive = new DifferentialDrive(m_leftMotor::set, m_rightmotor::set);
+    m_leftStick = new Joystick(9);
+    m_rightStick = new Joystick(1); 
+
+    SendableRegistry.addChild(m_robotDrive, m_leftMotor);
+    SendableRegistry.addChild(m_robotDrive, m_rightmotor);
+  }
+
+  @Override
+  public void teleopPeriodic() {
+   // m_robotDrive.tankDrive(m_leftMotor, m_rightMotor);
+     m_leftMotor.set(-PS41.getLeftY());
+    m_rightmotor.set(PS41.getLeftY());
+    m_leftothermotor.set(PS41.getLeftY());
+    m_rightothermotor.set(PS41.getLeftY());
+
+    }
+}
